@@ -72,7 +72,7 @@ Organism::Organism() {
 }
 
 void Organism::addAppendage(Limb appendage) {
-	appendage.push_back(appendage);
+	appendages.push_back(appendage);
 }
 
 Limb Organism::getAppendage(int index) {
