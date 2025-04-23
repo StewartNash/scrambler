@@ -28,7 +28,7 @@ void messageCallback(const std_msgs::Empty& toggle_message) {
 	digitalWrite(13, HIGH - digitalRead(13)); // Blink the LED
 }
 
-ros::Subscriber<std_msgs::Empty> subscription_("toggle_led", &messageCallback);
+ros::Subscriber<std_msgs::Empty> subscription_("animations", &messageCallback);
 */
 
 void messageCallback(const std_msgs::Int16MultiArray message) {
