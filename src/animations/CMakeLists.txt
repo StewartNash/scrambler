@@ -25,13 +25,24 @@ if(BUILD_TESTING)
   ament_lint_auto_find_test_dependencies()
 endif()
 
-add_executable(animator_node src/animator.cpp)
+include_directories(
+  include
+)
+
+add_executable(animator_node src/animator_node.cpp src/animator.cpp)
 
 ament_target_dependencies(animator_node rclcpp std_msgs)
+
+install(
+  DIRECTORY include/animations/
+  DESTINATION include/animations
+)
 
 install(
   TARGETS animator_node
   DESTINATION lib/${PROJECT_NAME}
 )
+
+ament_export_include_directories(include)
 
 ament_package()
