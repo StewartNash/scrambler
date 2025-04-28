@@ -1,9 +1,18 @@
 import math
+import csv
 
-TEMPLATE_FILENAME = "src/animations/config/templates.csv"
+TEMPLATE_FILENAME = "../src/animations/config/templates.csv"
 
-def read_template():
-	pass
+def read_template(filename=TEMPLATE_FILENAME, using_header=False):
+	output = {}
+	with open(filename) as file_object:
+		if using_header:
+			heading = next(file_object)
+		else:
+			reader_object = csv.reader(file_object)
+			for row in reader_object:
+				temporary = output[row[0]] =  list(map(float, row[1:]))
+	return output	
 
 def inverse_kinematics(position_tuple):
 	LENGTH_1 = 68.25
