@@ -2,6 +2,7 @@ import math
 import csv
 
 TEMPLATE_FILENAME = "../src/animations/config/templates.csv"
+NUMBER_OF_LIMBS = 6
 
 def read_template(filename=TEMPLATE_FILENAME, using_header=False):
 	output = {}
@@ -13,6 +14,14 @@ def read_template(filename=TEMPLATE_FILENAME, using_header=False):
 			for row in reader_object:
 				temporary = output[row[0]] =  list(map(float, row[1:]))
 	return output	
+
+def write_template(filename, number_of_points):
+	with open(filename, 'w', newline='') as output_file:
+		csv_writer = csv.writer(output_file)
+		for i in range(number_of_points):
+			row = [leg_cycle(x) for x in range(NUMBER_OF_LIMBS)]
+			row = [item for x in row for item in x]	
+			csv_writer.writerow(row)
 
 def inverse_kinematics(position_tuple):
 	LENGTH_1 = 68.25
@@ -40,7 +49,17 @@ def rotate_around_point(x_to_rotate, y_to_rotate, a, b, theta):
 
 	return rotated_1, rotated_2
 
-def leg_cycle(leg, cycle_offset, ground_points, ground_distance, radial_distance, y_scale, z_scale, index, walk_angle, points=100):
+def leg_cycle(leg,
+	cycle_offset,
+	ground_points=50, # Percent of time the leg is on the ground (50 or 60)
+	ground_distance=90, # Distance of the robot from the ground
+	radial_distance=250, # Distance from joint 1 to the tip of the leg
+	y_scale=0.5,
+	z_scale=2.0,
+	index,
+	walk_angle,
+	points=100):
+
 	i = int(index + cycle_offset) % points	
 	if ground_points == 50:
 		x = radial_distance
