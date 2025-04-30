@@ -15,11 +15,11 @@ def read_template(filename=TEMPLATE_FILENAME, using_header=False):
 				temporary = output[row[0]] =  list(map(float, row[1:]))
 	return output	
 
-def write_template(filename, number_of_points):
+def write_template(filename, number_of_points, leg_path_dictionary):
 	with open(filename, 'w', newline='') as output_file:
 		csv_writer = csv.writer(output_file)
 		for i in range(number_of_points):
-			row = [leg_cycle(leg=x, cycle_offset=(1 - x % 2) * 50, index=i) for x in range(NUMBER_OF_LIMBS)]
+			row = [leg_cycle(leg=x, cycle_offset=(1 - x % 2) * 50, index=i, leg_path=leg_path_dictionary) for x in range(NUMBER_OF_LIMBS)]
 			row = [item for x in row for item in x]	
 			csv_writer.writerow(row)
 
@@ -52,6 +52,7 @@ def rotate_around_point(x_to_rotate, y_to_rotate, a, b, theta):
 def leg_cycle(leg,
 	cycle_offset,
 	index,
+	leg_path,
 	ground_points=50, # Percent of time the leg is on the ground (50 or 60)
 	ground_distance=90, # Distance of the robot from the ground
 	radial_distance=250, # Distance from joint 1 to the tip of the leg
@@ -60,15 +61,20 @@ def leg_cycle(leg,
 	walk_angle=0,
 	points=100):
 
+	leg_path_y50 = leg_path['leg_path_Y50']
+	leg_path_z50 = leg_path['leg_path_Z50']
+	leg_path_y60 = leg_path['leg_path_Y60']
+	leg_path_z60 = leg_path['leg_path_Z60']
+
 	i = int(index + cycle_offset) % points	
 	if ground_points == 50:
 		x = radial_distance
-		y = y_scale * leg_path_y50[k] - y_zero_offset - ground_distance
-		z = z_scale * leg_path_z50[k]
+		y = y_scale * leg_path_y50[i] - y_zero_offset - ground_distance
+		z = z_scale * leg_path_z50[i]
 	elif ground_points == 60:
 		x = radial_distance
-		y = y_scale * leg_path_y60[k] - y_zero_offset - ground_distance
-		z = z_scale * leg_path_z60[k]
+		y = y_scale * leg_path_y60[i] - y_zero_offset - ground_distance
+		z = z_scale * leg_path_z60[i]
 	else:
 		x = 0
 		y = 0
