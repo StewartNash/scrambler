@@ -29,7 +29,12 @@ def inverse_kinematics(position_tuple):
 	LENGTH_3 = 214.44
 
 	y_zero_offset = 40
-	leg_path_y50, leg_path_z50, leg_path_y60, leg_path_z60 = read_template()
+	leg_path = read_template()
+
+	leg_path_y50 = leg_path['leg_path_Y50']
+	leg_path_z50 = leg_path['leg_path_Z50']
+	leg_path_y60 = leg_path['leg_path_Y60']
+	leg_path_z60 = leg_path['leg_path_Z60']
 
 	x, y, z = position_tuple
 	theta_1 = math.atan(z / x) * 180.0 / math.pi + 90.0
@@ -59,7 +64,8 @@ def leg_cycle(leg,
 	y_scale=0.5,
 	z_scale=2.0,
 	walk_angle=0,
-	points=100):
+	points=100,
+	y_zero_offset=40): # When 45 for all legs, distance from ground of robot is zero
 
 	leg_path_y50 = leg_path['leg_path_Y50']
 	leg_path_z50 = leg_path['leg_path_Z50']
