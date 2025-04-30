@@ -19,7 +19,7 @@ def write_template(filename, number_of_points):
 	with open(filename, 'w', newline='') as output_file:
 		csv_writer = csv.writer(output_file)
 		for i in range(number_of_points):
-			row = [leg_cycle(x) for x in range(NUMBER_OF_LIMBS)]
+			row = [leg_cycle(leg=x, cycle_offset=(1 - x % 2) * 50, index=i) for x in range(NUMBER_OF_LIMBS)]
 			row = [item for x in row for item in x]	
 			csv_writer.writerow(row)
 
@@ -51,13 +51,13 @@ def rotate_around_point(x_to_rotate, y_to_rotate, a, b, theta):
 
 def leg_cycle(leg,
 	cycle_offset,
+	index,
 	ground_points=50, # Percent of time the leg is on the ground (50 or 60)
 	ground_distance=90, # Distance of the robot from the ground
 	radial_distance=250, # Distance from joint 1 to the tip of the leg
 	y_scale=0.5,
 	z_scale=2.0,
-	index,
-	walk_angle,
+	walk_angle=0,
 	points=100):
 
 	i = int(index + cycle_offset) % points	
