@@ -4,7 +4,7 @@ import csv
 TEMPLATE_FILENAME = "../src/animations/config/templates.csv"
 NUMBER_OF_LIMBS = 6
 
-class TrigonmetricError(Exception):
+class TrigonometricError(Exception):
 	"""Custom exception raised for trigonmetric argument out of bounds.
 
 	Attributes:
@@ -15,15 +15,15 @@ class TrigonmetricError(Exception):
 		super().__init__(self.message)
 
 def compute_angle_1(radius, length_2, length_3):
-	output = (length_2 * length_2 + radius * radius - length_3 * length_3) / (2 * length_2 * radius)
-	if math.abs(output) > 1:
-		raise(TrigonometricError("Angle is larger than 1.", 100)
+	output = (length_2 ** 2 + radius ** 2 - length_3 ** 2) / (2 * length_2 * radius)
+	if abs(output) > 1:
+		raise(TrigonometricError("Angle is larger than 1."))
 	return output
 
 def compute_angle_2(radius, length_2, length_3):
-	output = (-length_2 * length_2  - length_3 * length_3 + radius * radius) / (-2 * length_2 * length_3)
-	if math.abs(output) > 1:
-		raise(TrigonometricError("Angle is larger than 1.", 200)
+	output = (-length_2 ** 2  - length_3 ** 2 + radius ** 2) / (-2 * length_2 * length_3)
+	if abs(output) > 1:
+		raise(TrigonometricError("Angle is larger than 1."))
 	return output
 
 def read_template(filename=TEMPLATE_FILENAME, using_header=False):
