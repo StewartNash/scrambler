@@ -4,28 +4,6 @@ import csv
 TEMPLATE_FILENAME = "../src/animations/config/templates.csv"
 NUMBER_OF_LIMBS = 6
 
-class TrigonometricError(Exception):
-	"""Custom exception raised for trigonmetric argument out of bounds.
-
-	Attributes:
-		message -- explanation of the error
-	"""
-	def __init__(self, message):
-		self.message = message
-		super().__init__(self.message)
-
-def compute_cosine_1(radius, length_2, length_3):
-	output = (length_2 ** 2 + radius ** 2 - length_3 ** 2) / (2 * length_2 * radius)
-	if abs(output) > 1:
-		raise(TrigonometricError("Angle is larger than 1."))
-	return output
-
-def compute_cosine_2(radius, length_2, length_3):
-	output = (-length_2 ** 2  - length_3 ** 2 + radius ** 2) / (-2 * length_2 * length_3)
-	if abs(output) > 1:
-		raise(TrigonometricError("Angle is larger than 1."))
-	return output
-
 def read_template(filename=TEMPLATE_FILENAME, using_header=False):
 	output = {}
 	with open(filename) as file_object:
@@ -63,29 +41,15 @@ def inverse_kinematics(position_tuple):
 	radius_x = math.sqrt(x * x + z * z) - LENGTH_1
 	some_angle_2 = math.atan(y / radius_x)
 	radius = math.sqrt(y * y + radius_x * radius_x)
-	#print((LENGTH_2 * LENGTH_2 + radius * radius - LENGTH_3 * LENGTH_3) / (2 * LENGTH_2 * radius))
-	try:
-		#some_angle_1 = -math.acos((LENGTH_2 * LENGTH_2 + radius * radius - LENGTH_3 * LENGTH_3) / (2 * LENGTH_2 * radius))
-		some_angle_1 = -math.acos(compute_cosine_1(radius, LENGTH_2, LENGTH_3))
-	except TrigonometricError:
-	    print("Trigonometric argument greater than 1. Truncating value.")
-	    #if compute_cosine_1(radius, LENGTH_2, LENGTH_3) > 0:
-	    #    some_angle_1 = -math.acos(1)
-	    #else:
-	    #    some_angle_1 = -math.acos(-1)
-	    some_angle_1 = math.acos(1)
+	some_cosine_1 = ((LENGTH_2 * LENGTH_2 + radius * radius - LENGTH_3 * LENGTH_3) / (2 * LENGTH_2 * radius))
+	if some_cosine_1 > 1: #TODO: This error in formulation must be fixed
+	    some_cosine_1 = 1
+	some_angle_1 = -math.acos(some_cosine_1)
 	theta_2 = (some_angle_2 - some_angle_1) * 180.0 / math.pi
-	#print((-LENGTH_2 * LENGTH_2 - LENGTH_3 * LENGTH_3 + radius * radius) / (-2 * LENGTH_2 * LENGTH_3))
-	try:
-	    #some_angle_3 = math.acos((-LENGTH_2 * LENGTH_2 - LENGTH_3 * LENGTH_3 + radius * radius) / (-2 * LENGTH_2 * LENGTH_3))
-		some_angle_3 = math.acos(compute_cosine_2(radius, LENGTH_2, LENGTH_3))
-	except TrigonometricError:
-		print("Trigonometric argument is less than -1. Truncating value.")
-		#if compute_cosine_2(radius, LENGTH_2, LENGTH_3) > 0:
-		#    some_angle_3 = math.acos(1)
-		#else:
-		#    some_angle_3 = math.acos(-1)
-		some_angle_3 = math.acos(-1)
+	some_cosine_3 = ((-LENGTH_2 * LENGTH_2 - LENGTH_3 * LENGTH_3 + radius * radius) / (-2 * LENGTH_2 * LENGTH_3))
+	if some_cosine_3 < -1: #TODO: This error in formulation must be fixed
+	    some_cosine_3 = -1
+	some_angle_3 = math.acos(some_cosine_3)
 	theta_3 = (math.pi - some_angle_3) * 180.0 / math.pi
 		
 	return (theta_1, theta_2, theta_3)
