@@ -14,13 +14,13 @@ class TrigonometricError(Exception):
 		self.message = message
 		super().__init__(self.message)
 
-def compute_angle_1(radius, length_2, length_3):
+def compute_cosine_1(radius, length_2, length_3):
 	output = (length_2 ** 2 + radius ** 2 - length_3 ** 2) / (2 * length_2 * radius)
 	if abs(output) > 1:
 		raise(TrigonometricError("Angle is larger than 1."))
 	return output
 
-def compute_angle_2(radius, length_2, length_3):
+def compute_cosine_2(radius, length_2, length_3):
 	output = (-length_2 ** 2  - length_3 ** 2 + radius ** 2) / (-2 * length_2 * length_3)
 	if abs(output) > 1:
 		raise(TrigonometricError("Angle is larger than 1."))
@@ -66,10 +66,10 @@ def inverse_kinematics(position_tuple):
 	#print((LENGTH_2 * LENGTH_2 + radius * radius - LENGTH_3 * LENGTH_3) / (2 * LENGTH_2 * radius))
 	try:
 		#some_angle_1 = -math.acos((LENGTH_2 * LENGTH_2 + radius * radius - LENGTH_3 * LENGTH_3) / (2 * LENGTH_2 * radius))
-		some_angle_1 = -math.acos(compute_angle_1(radius, LENGTH_2, LENGTH_3))
+		some_angle_1 = -math.acos(compute_cosine_1(radius, LENGTH_2, LENGTH_3))
 	except TrigonometricError:
 	    print("Trigonometric argument greater than 1. Truncating value.")
-	    #if compute_angle_1(radius, LENGTH_2, LENGTH_3) > 0:
+	    #if compute_cosine_1(radius, LENGTH_2, LENGTH_3) > 0:
 	    #    some_angle_1 = -math.acos(1)
 	    #else:
 	    #    some_angle_1 = -math.acos(-1)
@@ -78,10 +78,10 @@ def inverse_kinematics(position_tuple):
 	#print((-LENGTH_2 * LENGTH_2 - LENGTH_3 * LENGTH_3 + radius * radius) / (-2 * LENGTH_2 * LENGTH_3))
 	try:
 	    #some_angle_3 = math.acos((-LENGTH_2 * LENGTH_2 - LENGTH_3 * LENGTH_3 + radius * radius) / (-2 * LENGTH_2 * LENGTH_3))
-		some_angle_3 = math.acos(compute_angle_2(radius, LENGTH_2, LENGTH_3))
+		some_angle_3 = math.acos(compute_cosine_2(radius, LENGTH_2, LENGTH_3))
 	except TrigonometricError:
 		print("Trigonometric argument is less than -1. Truncating value.")
-		#if compute_angle_2(radius, LENGTH_2, LENGTH_3) > 0:
+		#if compute_cosine_2(radius, LENGTH_2, LENGTH_3) > 0:
 		#    some_angle_3 = math.acos(1)
 		#else:
 		#    some_angle_3 = math.acos(-1)
